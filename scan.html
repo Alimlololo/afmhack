@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>QR-Shield — проверка QR-кода</title>
+<style>
+  :root{ --ink:#0b1f3a; --cyan:#0fa3b1; --line:#d6deea;
+         --green:#16a34a; --amber:#d97706; --red:#dc2626; }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0b1f3a;color:#0b1f3a;min-height:100vh;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    display:flex;justify-content:center}
+  .wrap{width:100%;max-width:480px;padding:18px}
+  .head{display:flex;align-items:center;gap:10px;color:#fff;margin:6px 2px 2px}
+  .dot{width:12px;height:12px;border-radius:50%;background:var(--cyan);
+    box-shadow:0 0 0 5px rgba(15,163,177,.22)}
+  .head b{font-size:20px;letter-spacing:-.01em}
+  .tag{color:#9fb3cd;font-size:13px;margin:2px 2px 16px 24px}
+  .card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 14px 44px rgba(6,16,34,.4)}
+  #reader{border-radius:12px;overflow:hidden}
+  #reader:empty{display:none}
+  .btn{width:100%;padding:14px;border:0;border-radius:12px;font-size:16px;
+    font-weight:650;cursor:pointer;background:var(--ink);color:#fff;margin-top:10px}
+  .btn:hover{background:#13335c}
+  .btn.ghost{background:#eef2f8;color:var(--ink)}
+  .or{display:flex;align-items:center;gap:10px;color:#8295ad;font-size:13px;margin:16px 0}
+  .or::before,.or::after{content:"";height:1px;background:var(--line);flex:1}
+  .row{display:flex;gap:8px}
+  .in{flex:1;padding:13px 14px;border:1.5px solid var(--line);border-radius:11px;font-size:15px;outline:none}
+  .in:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(15,163,177,.15)}
+  .res{margin-top:16px;border-radius:14px;padding:18px;border-left:7px solid var(--line);
+    background:#f6f8fb;display:none}
+  .res.show{display:block;animation:pop .25s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .vd{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:750}
+  .host{font-size:13px;color:#5b6b82;word-break:break-all;margin:8px 0 12px}
+  .bar{height:9px;border-radius:99px;background:#e6ebf2;overflow:hidden}
+  .fill{height:100%;width:0;transition:width .5s ease}
+  ul{list-style:none;padding:0;margin:13px 0 0}
+  li{display:flex;gap:8px;font-size:14px;line-height:1.45;margin:8px 0;color:#27374d}
+  li::before{content:"•";color:var(--cyan);font-weight:700}
+  .green{border-left-color:var(--green)} .green .fill{background:var(--green)}
+  .yellow{border-left-color:var(--amber)} .yellow .fill{background:var(--amber)}
+  .red{border-left-color:var(--red)} .red .fill{background:var(--red)}
+  .open{margin-top:14px}
+  .open.g{background:var(--green)} .open.g:hover{background:#15863e}
+  .open.y{background:var(--amber)} .open.y:hover{background:#b9650a}
+  .blocked{margin-top:14px;text-align:center;color:var(--red);font-weight:650;font-size:14px}
+  .foot{color:#7e91aa;font-size:12px;text-align:center;margin-top:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><span class="dot"></span><b>QR-Shield</b></div>
+  <p class="tag">Проверяет, куда ведёт QR-код, ещё до открытия — прямо на устройстве</p>
+
+  <div class="card">
+    <div id="reader"></div>
+    <button class="btn" id="scan">📷 Сканировать QR-код</button>
+
+    <div class="or">или</div>
+    <div class="row">
+      <input class="in" id="url" placeholder="Вставьте ссылку вручную" autocomplete="off" spellcheck="false">
+      <button class="btn ghost" style="width:auto;margin-top:0" id="go">Проверить</button>
+    </div>
+
+    <div class="res" id="res">
+      <div class="vd" id="vd"></div>
+      <div class="host" id="host"></div>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+      <ul id="reasons"></ul>
+      <div id="action"></div>
+    </div>
+
+    <p class="foot">Модель машинного обучения работает офлайн в браузере.<br>
+       Ссылка никуда не отправляется.</p>
+  </div>
+</div>
+
+<script src="qrshield_model_data.js"></script>
+<script src="qrshield.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const LABEL = {green:"Безопасно", yellow:"Осторожно", red:"Опасно — не открывайте"};
+  const ICON  = {green:"🟢", yellow:"🟡", red:"🔴"};
+
+  function show(url){
+    const d = window.qrShieldAssess(url);
+    const res = $("res");
+    res.className = "res show " + d.verdict;
+    $("vd").textContent = ICON[d.verdict] + "  " + LABEL[d.verdict];
+    $("host").textContent = d.host || url;
+    $("fill").style.width = (d.risk || 0) + "%";
+    $("reasons").innerHTML = (d.reasons || []).map(x => "<li>" + x + "</li>").join("");
+    const a = $("action");
+    if (d.verdict === "green")
+      a.innerHTML = `<button class="btn open g" onclick="window.open('${url}','_blank')">Открыть сайт</button>`;
+    else if (d.verdict === "yellow")
+      a.innerHTML = `<button class="btn open y" onclick="window.open('${url}','_blank')">Всё равно открыть (на свой риск)</button>`;
+    else
+      a.innerHTML = `<div class="blocked">⛔ Открытие заблокировано для вашей безопасности</div>`;
+    res.scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+
+  $("go").addEventListener("click", () => { const u=$("url").value.trim(); if(u) show(u); });
+  $("url").addEventListener("keydown", e => { if(e.key==="Enter"){ const u=$("url").value.trim(); if(u) show(u); }});
+
+  // Camera scanning (requires HTTPS or localhost)
+  let scanner = null, scanning = false;
+  $("scan").addEventListener("click", async () => {
+    if (scanning) { await scanner.stop(); scanning=false; $("scan").textContent="📷 Сканировать QR-код"; return; }
+    if (!scanner) scanner = new Html5Qrcode("reader");
+    try {
+      scanning = true; $("scan").textContent = "⏹ Остановить камеру";
+      await scanner.start({facingMode:"environment"}, {fps:10, qrbox:{width:230,height:230}},
+        async (text) => { await scanner.stop(); scanning=false;
+          $("scan").textContent="📷 Сканировать ещё раз"; show(text); });
+    } catch (e) {
+      scanning = false; $("scan").textContent="📷 Сканировать QR-код";
+      alert("Камера недоступна. Откройте страницу по HTTPS и разрешите доступ к камере, либо вставьте ссылку вручную.");
+    }
+  });
+</script>
+</body>
+</html>
