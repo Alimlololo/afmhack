@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тарифы — QR-Shield</title>
+  <meta name="description" content="Тарифы QR-Shield: от бесплатного сканера до корпоративного API с интеграцией KZ-CERT. Защита от квишинга для бизнеса в Казахстане.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Pricing Hero ===== */
+    .pricing-hero {
+      padding: 160px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-hero .hero-bg { position: absolute; inset: 0; pointer-events: none; }
+    .pricing-hero-content { position: relative; z-index: 1; }
+    .pricing-hero h1 {
+      font-size: clamp(38px, 5vw, 60px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+    .pricing-hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ===== Plans ===== */
+    .plans-section { padding: 64px 0 100px; background: var(--bg); }
+    .compare-section { background: #ffffff; }
+    .faq-section { background: var(--bg); }
+    .pricing-cta-section { background: #ffffff; }
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .plan-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 36px 32px;
+      position: relative;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      transition: box-shadow .25s, transform .25s;
+    }
+    .plan-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+    .plan-card.featured {
+      border-color: var(--primary);
+      background: linear-gradient(180deg, rgba(254,87,41,0.05) 0%, #ffffff 50%);
+      box-shadow: 0 4px 32px rgba(254,87,41,0.12);
+    }
+    .plan-card.featured:hover { box-shadow: 0 12px 48px rgba(254,87,41,0.2); }
+    .plan-popular-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .plan-tier {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .plan-title { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .plan-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
+    .plan-price {
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .plan-amount {
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+    .plan-currency { font-size: 18px; font-weight: 600; color: var(--text-muted); }
+    .plan-period { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .plan-cta {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 28px;
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .plan-cta-primary {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 24px var(--primary-glow);
+    }
+    .plan-cta-primary:hover { background: #e84c21; box-shadow: 0 4px 40px var(--primary-glow); transform: translateY(-1px); }
+    .plan-cta-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .plan-cta-outline:hover { border-color: var(--border-hover); background: var(--surface-2); }
+    .plan-cta-dark {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .plan-cta-dark:hover { border-color: var(--primary); color: var(--primary); }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .plan-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .plan-feature .fi { flex-shrink: 0; margin-top: 1px; }
+    .fi-yes { color: var(--safe); }
+    .fi-no { color: var(--text-faint); opacity: 0.35; }
+    .plan-feature.dim { color: var(--text-muted); }
+    .plan-divider {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 0 4px;
+    }
+
+    /* ===== Compare Table ===== */
+    .compare-section { padding: 0 0 100px; }
+    .compare-section h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+    .compare-section .section-subtitle { margin-bottom: 48px; }
+    .full-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .full-compare-table th {
+      padding: 18px 20px;
+      background: var(--surface-2);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .full-compare-table th:first-child { text-align: left; width: 38%; }
+    .full-compare-table th.col-pro { color: var(--primary); background: rgba(254,87,41,0.07); }
+    .full-compare-table td {
+      padding: 13px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .full-compare-table td:first-child {
+      text-align: left;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .full-compare-table td.col-pro { background: rgba(254,87,41,0.03); }
+    .full-compare-table tr:last-child td { border-bottom: none; }
+    .full-compare-table .cat-row td {
+      background: var(--surface-2);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 10px 20px;
+    }
+    .check-yes { color: var(--safe); font-size: 16px; font-weight: 700; }
+    .check-no { color: #cccccc; font-size: 18px; }
+    .check-partial { color: var(--warning); font-weight: 600; font-size: 13px; }
+
+    /* ===== FAQ ===== */
+    .faq-section { padding: 0 0 100px; }
+    .faq-section h2 {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .faq-section .section-subtitle { margin-bottom: 48px; }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color .2s;
+    }
+    .faq-item:hover { border-color: var(--border-hover); }
+    .faq-q { font-size: 15px; font-weight: 700; margin-bottom: 10px; line-height: 1.35; }
+    .faq-a { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
+    .faq-a strong { color: var(--text); font-weight: 600; }
+
+    /* ===== CTA ===== */
+    .pricing-cta-section { padding: 0 0 100px; }
+    .pricing-cta-card {
+      background: linear-gradient(135deg, rgba(254,87,41,0.08) 0%, rgba(74,159,221,0.06) 100%);
+      border: 1px solid rgba(254,87,41,0.22);
+      border-radius: var(--radius-xl);
+      padding: 64px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .pricing-cta-card h2 {
+      font-size: clamp(26px, 3vw, 38px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 14px;
+    }
+    .pricing-cta-card p {
+      font-size: 17px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* Footer handled by base CSS (dark) */
+
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .plans-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+      .faq-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .pricing-hero { padding: 120px 0 60px; }
+      .pricing-cta-card { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header" id="header">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <svg class="logo-icon" viewBox="0 0 40 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 2L36 9V22C36 31.5 29 38.5 20 41C11 38.5 4 31.5 4 22V9L20 2Z"
+                fill="url(#sg2)" stroke="rgba(254,87,41,0.5)" stroke-width="1"/>
+          <path d="M13 21L18 26L27 15" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="sg2" x1="4" y1="2" x2="36" y2="41" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#FE5729"/>
+              <stop offset="100%" stop-color="#c83d10"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        QR<span class="accent">Shield</span>
+      </a>
+      <nav class="nav">
+        <a href="index.html#problem" class="nav-link">Проблема</a>
+        <a href="index.html#how-it-works" class="nav-link">Как работает</a>
+        <a href="index.html#ai-model" class="nav-link">AI-модель</a>
+        <a href="index.html#demo" class="nav-link">Демо</a>
+        <a href="pricing.html" class="nav-link" style="color: var(--primary)">Тарифы</a>
+      </nav>
+      <a href="index.html" class="btn btn-primary header-cta">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <path d="M14 14h3v3M21 14v3M14 21h7"/>
+        </svg>
+        Сканировать
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== Pricing Hero ===== -->
+  <section class="pricing-hero">
+    <div class="hero-bg">
+      <div class="grid-pattern"></div>
+      <div class="glow glow-1"></div>
+      <div class="glow glow-2"></div>
+    </div>
+    <div class="container pricing-hero-content">
+      <div class="badge" style="margin-bottom: 28px;">
+        <span class="badge-dot"></span>
+        Гибкие условия — от частного лица до банка
+      </div>
+      <h1>Выберите <span class="gradient-text">тариф</span></h1>
+      <p>Начните бесплатно и масштабируйтесь по мере роста — без скрытых комиссий и переплат.</p>
+    </div>
+  </section>
+
+  <!-- ===== Plans ===== -->
+  <section class="plans-section">
+    <div class="container">
+      <div class="plans-grid">
+
+        <!-- Free -->
+        <div class="plan-card">
+          <div class="plan-tier">Базовый</div>
+          <div class="plan-title">Бесплатный</div>
+          <p class="plan-desc">Для частных лиц, которые хотят проверять QR-коды перед оплатой.</p>
+          <div class="plan-price">
+            <div class="plan-amount">0 <span class="plan-currency">₸</span></div>
+            <div class="plan-period">бесплатно навсегда</div>
+          </div>
+          <a href="index.html" class="plan-cta plan-cta-outline">Начать бесплатно</a>
+          <ul class="plan-features">
+            <div class="plan-divider">Сканирование</div>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Сканирование через камеру
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Загрузка фото QR-кода
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Ввод URL вручную
+            </li>
+            <li class="plan-feature dim">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              До 50 проверок в день
+            </li>
+            <div class="plan-divider">AI-анализ</div>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              17+ признаков фишинга
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Белый список КЗ-банков
+            </li>
+            <li class="plan-feature dim">
+              <svg class="fi fi-no" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Интеграция (SDK / API)
+            </li>
+          </ul>
+        </div>
+
+        <!-- SDK Pro — Featured -->
+        <div class="plan-card featured">
+          <div class="plan-popular-badge">Популярный</div>
+          <div class="plan-tier">SDK / Pro</div>
+          <div class="plan-title">Разработчик</div>
+          <p class="plan-desc">Для команд и стартапов, встраивающих защиту в своё приложение.</p>
+          <div class="plan-price">
+            <div class="plan-amount">99 000 <span class="plan-currency">₸</span></div>
+            <div class="plan-period">в месяц &nbsp;·&nbsp; годовая — скидка 20%</div>
+          </div>
+          <button class="plan-cta plan-cta-primary" onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})">Подать заявку</button>
+          <ul class="plan-features">
+            <div class="plan-divider">Всё из Базового, плюс:</div>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              JavaScript + WebAssembly SDK
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              REST API — 100 000 запросов/мес
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Без ограничений на устройство
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Sandbox и документация
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Поддержка по email — отв. 48 ч
+            </li>
+            <li class="plan-feature dim">
+              <svg class="fi fi-no" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              On-premise / локальный сервер
+            </li>
+            <li class="plan-feature dim">
+              <svg class="fi fi-no" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Кастомная AI-модель
+            </li>
+          </ul>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="plan-card">
+          <div class="plan-tier">Корпоративный</div>
+          <div class="plan-title">Enterprise</div>
+          <p class="plan-desc">Для банков, финтех-компаний и корпоративных клиентов с высокими требованиями.</p>
+          <div class="plan-price">
+            <div class="plan-amount" style="font-size: 34px; line-height: 1.15;">По запросу</div>
+            <div class="plan-period">индивидуальный договор</div>
+          </div>
+          <button class="plan-cta plan-cta-dark" onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})">Связаться с командой</button>
+          <ul class="plan-features">
+            <div class="plan-divider">Всё из SDK Pro, плюс:</div>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              On-premise сервер (без облака)
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Неограниченные запросы
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Кастомная модель под ваши бренды
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Интеграция с SOC / KZ-CERT
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              SLA 99,9% + поддержка 24/7
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Выделенный технический менеджер
+            </li>
+            <li class="plan-feature">
+              <svg class="fi fi-yes" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Демо-звонок и POC в течение 48 ч
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Feature Comparison ===== -->
+  <section class="compare-section">
+    <div class="container">
+      <h2>Полное <span class="gradient-text">сравнение</span></h2>
+      <p class="section-subtitle">Все возможности по тарифам — одним взглядом</p>
+
+      <table class="full-compare-table">
+        <thead>
+          <tr>
+            <th>Возможность</th>
+            <th>Базовый</th>
+            <th class="col-pro">SDK Pro</th>
+            <th>Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cat-row"><td colspan="4">Сканирование</td></tr>
+          <tr>
+            <td>Сканирование через камеру</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Загрузка изображения QR</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Ввод URL вручную</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Лимит запросов</td>
+            <td>50 / день</td>
+            <td class="col-pro">100 000 / мес</td>
+            <td>Без ограничений</td>
+          </tr>
+
+          <tr class="cat-row"><td colspan="4">AI-анализ</td></tr>
+          <tr>
+            <td>17+ признаков фишинга</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Белый список КЗ-банков и сервисов</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Расстояние Левенштейна до доверенных доменов</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Скорость вердикта</td>
+            <td>&lt; 100 мс</td>
+            <td class="col-pro">&lt; 100 мс</td>
+            <td>&lt; 50 мс (custom)</td>
+          </tr>
+          <tr>
+            <td>Кастомная AI-модель под ваши бренды</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-no">—</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+
+          <tr class="cat-row"><td colspan="4">Интеграция</td></tr>
+          <tr>
+            <td>JavaScript SDK</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>WebAssembly модуль</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>REST API</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>On-premise / локальный сервер</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-no">—</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Интеграция с SOC / KZ-CERT</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-no">—</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+
+          <tr class="cat-row"><td colspan="4">Приватность и соответствие</td></tr>
+          <tr>
+            <td>Анализ на устройстве (0 данных на сервер)</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Соответствие Закону РК «О персональных данных»</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>SLA</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-partial">99,5%</span></td>
+            <td><span class="check-yes">99,9%</span></td>
+          </tr>
+
+          <tr class="cat-row"><td colspan="4">Поддержка</td></tr>
+          <tr>
+            <td>Документация и примеры</td>
+            <td><span class="check-yes">✓</span></td>
+            <td class="col-pro"><span class="check-yes">✓</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Email-поддержка</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-partial">48 ч</span></td>
+            <td><span class="check-yes">4 ч</span></td>
+          </tr>
+          <tr>
+            <td>Выделенный технический менеджер</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-no">—</span></td>
+            <td><span class="check-yes">✓</span></td>
+          </tr>
+          <tr>
+            <td>Демо-сессия / POC</td>
+            <td><span class="check-no">—</span></td>
+            <td class="col-pro"><span class="check-no">—</span></td>
+            <td><span class="check-yes">✓ (48 ч)</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq-section">
+    <div class="container">
+      <h2>Частые <span class="gradient-text">вопросы</span></h2>
+      <p class="section-subtitle">Ответы на самые распространённые вопросы о тарифах</p>
+
+      <div class="faq-grid">
+        <div class="faq-item">
+          <div class="faq-q">Что включает SDK-тариф для разработчика?</div>
+          <p class="faq-a">Вы получаете <strong>JavaScript-библиотеку</strong> и <strong>WebAssembly-модуль</strong> для встраивания в веб- или мобильное приложение, REST API с лимитом 100 000 запросов в месяц, sandbox-среду для тестирования и полную документацию.</p>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Мои данные в безопасности?</div>
+          <p class="faq-a">Да. Анализ URL выполняется <strong>локально в браузере</strong> или на вашем сервере — ни URL, ни результаты проверки не отправляются на наши серверы. Это принципиальная часть архитектуры QR-Shield.</p>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Есть ли пробный период для SDK?</div>
+          <p class="faq-a">Да, мы предоставляем <strong>14-дневный пробный доступ</strong> для оценки SDK в вашей среде. Для этого подайте заявку — мы выдадим ключ и поможем с первой интеграцией.</p>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Как быстро можно получить POC для Enterprise?</div>
+          <p class="faq-a">После заявки мы связываемся <strong>в течение 48 часов</strong>, проводим демо-сессию и подготавливаем POC под вашу инфраструктуру. Для банков и МФО возможна NDA-интеграция с SOC.</p>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Можно ли использовать QR-Shield в мобильном приложении?</div>
+          <p class="faq-a">Да. SDK-тариф включает WebAssembly-модуль, который работает в любом современном браузере и в окружениях React Native / Capacitor. Для нативного iOS/Android — уточните в корпоративном тарифе.</p>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">Как оплатить? Принимаете ли оплату в тенге?</div>
+          <p class="faq-a">Да, все расчёты в <strong>тенге (KZT)</strong>. Принимаем Kaspi Business, банковский перевод (счёт-фактура) и корпоративные карты. Для Enterprise возможен годовой договор с отсрочкой платежа.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact CTA ===== -->
+  <section class="pricing-cta-section" id="contact-form">
+    <div class="container">
+      <div class="pricing-cta-card">
+        <h2>Остались вопросы?</h2>
+        <p>Напишите нам — поможем выбрать подходящий тариф, проведём демо и ответим на технические вопросы.</p>
+        <div class="cta-buttons">
+          <a href="https://t.me/qrshield_kz" class="btn btn-primary btn-large" target="_blank" rel="noopener noreferrer">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Написать в Telegram
+          </a>
+          <a href="mailto:hello@qr-shield.kz" class="btn btn-secondary btn-large">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            hello@qr-shield.kz
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="logo">QR<span class="accent">Shield</span></span>
+          <p>Локальная AI-защита от QR-фишинга для казахстанских пользователей и бизнеса. Ноль данных на сервер.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Продукт</h4>
+          <ul>
+            <li><a href="index.html#how-it-works">Как работает</a></li>
+            <li><a href="index.html#ai-model">AI-модель</a></li>
+            <li><a href="index.html#security">Безопасность</a></li>
+            <li><a href="index.html#demo">Демо</a></li>
+            <li><a href="trap.html">Пример атаки</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Тарифы</h4>
+          <ul>
+            <li><a href="pricing.html">Все тарифы</a></li>
+            <li><a href="pricing.html#contact-form">SDK Pro</a></li>
+            <li><a href="pricing.html#contact-form">Enterprise</a></li>
+            <li><a href="index.html#sources">Источники</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <ul>
+            <li><a href="https://t.me/qrshield_kz" target="_blank" rel="noopener noreferrer">Telegram</a></li>
+            <li><a href="mailto:hello@qr-shield.kz">hello@qr-shield.kz</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-bottom-left">© 2026 QR-Shield. Все права защищены.</div>
+        <div class="footer-privacy-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Анализ выполняется на устройстве — данные не передаются
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    });
+  </script>
+
+</body>
+</html>
